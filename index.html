@@ -7,12 +7,21 @@
     <link rel="stylesheet" href="./public/css/style.css">
 </head>
 <body>
-    <h1>MolenTus</h1>
-    <section id="Section-Word">
-
+    <section>
+        <h1>Molentus</h1>
+        <div id="game-grid" class="grid"></div>
+        <div class="input-section">
+            <input type="text" id="user-input" maxlength="5" placeholder="Entrez un mot de 5 lettres" />
+            <button id="submit-button">Valider</button>
+        </div>
+        <p id="feedback"></p>
     </section>
-    <section id="Section-game">
-
+    <section>
+        <img class="hidden" id="crocmou" src="./public/img/toothless-dancing.gif" alt="">
+        <audio class="hidden" id="audioPlayer" controls loop>
+            <source id="audioSource" src="./public/music/Toothless.mp3" type="audio/mp3">
+            Votre navigateur ne supporte pas l'élément audio.
+        </audio>  
     </section>
 <script src="./public/js/main.js"></script>
 </body>

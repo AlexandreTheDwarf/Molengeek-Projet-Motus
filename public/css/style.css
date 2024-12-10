@@ -1,0 +1,38 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 20px;
+}
+.grid {
+    display: grid;
+    grid-template-columns: repeat(5, 50px);
+    gap: 5px;
+    justify-content: center;
+    margin: 20px auto;
+}
+.cell {
+    width: 50px;
+    height: 50px;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5em;
+    text-transform: uppercase;
+}
+.correct {
+    background-color: lightgreen;
+}
+.wrong-place {
+    background-color: yellow;
+}
+.input-section {
+    margin-top: 20px;
+}
+
+.hidden{
+    width: 0;
+    height: 0;
+    visibility: hidden; /* Cache visuellement l'élément */
+    position: absolute; /* Le retire du flux visuel, si nécessaire */
+}

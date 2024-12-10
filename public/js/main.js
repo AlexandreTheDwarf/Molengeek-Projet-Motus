@@ -1,53 +1,92 @@
-// DOM : Get Element :
+// Bonus ++ 
 
+function playSound() {
+    audioPlayer.play();           // Joue le son
+}
+
+// DOM : Récupération des éléments
+const grid = document.getElementById("game-grid");
+const userInput = document.getElementById("user-input");
+const submitButton = document.getElementById("submit-button");
+const feedback = document.getElementById("feedback");
+const crocmou = document.getElementById("crocmou")
 
 // Liste de mots disponibles
-let word = ["porte", "table", "fleur", "papier", "livre", "lapin", "taupe", "raton", "bible", "fibre"];
-let GuessWord = word[Math.floor(Math.random() * word.length)];
-
+let words = ["porte", "table", "fleur", "papier", "livre", "lapin", "taupe", "raton", "bible", "fibre"];
+let GuessWord = words[Math.floor(Math.random() * words.length)];
 console.log(GuessWord); // Debug : Afficher le mot à deviner
 
 // Initialisation de l'affichage
-let AffichageGuess = [];
-for (let i = 0; i < GuessWord.length; i++) {
-    AffichageGuess.push("[]");
+let maxAttempts = 6; // Nombre d'essais maximum
+let currentAttempt = 0; // Tentative actuelle
+let AffichageGuess = Array(GuessWord.length).fill("[]");
+
+// Création de la grille
+function initializeGrid() {
+    for (let i = 0; i < maxAttempts; i++) {
+        for (let j = 0; j < GuessWord.length; j++) {
+            const cell = document.createElement("div");
+            cell.classList.add("cell");
+            grid.appendChild(cell);
+        }
+    }
 }
+initializeGrid();
 
-console.log(AffichageGuess); // Affichage initial
+// Gérer une tentative
+function handleAttempt() {
+    let GuessUser = userInput.value.toLowerCase();
 
-// Début du jeu
-let GuessUser = ""; 
-
-// Jeu en cours
-do {
-    GuessUser = prompt("Donne ton mot"); // Entrée utilisateur
-    GuessUser = GuessUser.toLowerCase(); // Convertir en minuscule pour éviter les erreurs de casse
+    if (GuessUser.length !== GuessWord.length) {
+        feedback.textContent = "Le mot doit contenir exactement 5 lettres.";
+        return;
+    }
 
     let WrongPlace = [];
+    let rowStartIndex = currentAttempt * GuessWord.length;
 
-    // Vérifier chaque lettre
+    // Vérification des lettres
     for (let i = 0; i < GuessWord.length; i++) {
-        // Si la lettre est correcte et bien placée
+        const cell = grid.children[rowStartIndex + i];
         if (GuessUser[i] === GuessWord[i]) {
             AffichageGuess[i] = `[${GuessUser[i]}]`;
-        }
-    }
-
-    // Identifier les lettres correctes mais mal placées
-    WrongPlace = [];
-    for (let i = 0; i < GuessUser.length; i++) {
-        if (GuessWord.includes(GuessUser[i]) && GuessWord[i] !== GuessUser[i]) {
+            cell.textContent = GuessUser[i];
+            cell.classList.add("correct");
+        } else if (GuessWord.includes(GuessUser[i])) {
             WrongPlace.push(GuessUser[i]);
+            cell.textContent = GuessUser[i];
+            cell.classList.add("wrong-place");
+        } else {
+            cell.textContent = GuessUser[i];
         }
     }
 
-    if (WrongPlace.length >= 1){
-        console.log(AffichageGuess)
-        console.log(`Lettre comprise mais pas a la bonne place : ${WrongPlace}`)
-    }else{
-        console.log(AffichageGuess)
-    } 
+    feedback.textContent =
+        WrongPlace.length > 0
+            ? `Lettres correctes mais mal placées : ${WrongPlace.join(", ")}`
+            : "";
 
-} while (GuessUser !== GuessWord);
+    currentAttempt++;
 
-console.log("Tu as trouvé, bravo !");
+    if (GuessUser === GuessWord) {
+        feedback.textContent = "Bravo ! Vous avez trouvé le mot !";
+        userInput.disabled = true;
+        submitButton.disabled = true;
+        playSound()
+        crocmou.classList.remove("hidden");
+    } else if (currentAttempt === maxAttempts) {
+        feedback.textContent = `Perdu ! Le mot était "${GuessWord}".`;
+        userInput.disabled = true;
+        submitButton.disabled = true;
+    }
+
+    userInput.value = "";
+}
+
+// Gestion des événements
+submitButton.addEventListener("click", handleAttempt);
+userInput.addEventListener("keypress", function (e) {
+    if (e.key === "Enter") {
+        handleAttempt();
+    }
+});
