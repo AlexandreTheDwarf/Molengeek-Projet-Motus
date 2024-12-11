@@ -46,3 +46,11 @@ h1 > img{
     visibility: hidden; /* Cache visuellement l'élément */
     position: absolute; /* Le retire du flux visuel, si nécessaire */
 }
+
+#resultat{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
