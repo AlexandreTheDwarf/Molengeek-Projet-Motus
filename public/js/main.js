@@ -1,6 +1,9 @@
 // Bonus ++ 
 
-function playSound() {
+// Fonction pour changer la source et jouer le son
+function playSound(soundFile) {
+    audioSource.src = soundFile; // Change la source du son
+    audioPlayer.load();           // Recharge l'élément audio avec la nouvelle source
     audioPlayer.play();           // Joue le son
 }
 
@@ -10,9 +13,10 @@ const userInput = document.getElementById("user-input");
 const submitButton = document.getElementById("submit-button");
 const feedback = document.getElementById("feedback");
 const crocmou = document.getElementById("crocmou")
+const lose = document.getElementById("lose")
 
 // Liste de mots disponibles
-let words = ["porte", "table", "fleur", "papier", "livre", "lapin", "taupe", "raton", "bible", "fibre"];
+let words = ["porte", "table", "fleur", "livre", "lapin", "taupe", "raton", "bible", "fibre", "titan", "quete"];
 let GuessWord = words[Math.floor(Math.random() * words.length)];
 console.log(GuessWord); // Debug : Afficher le mot à deviner
 
@@ -72,12 +76,14 @@ function handleAttempt() {
         feedback.textContent = "Bravo ! Vous avez trouvé le mot !";
         userInput.disabled = true;
         submitButton.disabled = true;
-        playSound()
+        playSound("./public/music/Toothless.mp3")
         crocmou.classList.remove("hidden");
     } else if (currentAttempt === maxAttempts) {
         feedback.textContent = `Perdu ! Le mot était "${GuessWord}".`;
         userInput.disabled = true;
         submitButton.disabled = true;
+        playSound("./public/music/lose.mp3")
+        lose.classList.remove("hidden");
     }
 
     userInput.value = "";
