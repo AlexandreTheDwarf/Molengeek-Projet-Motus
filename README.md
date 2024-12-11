@@ -23,7 +23,7 @@ On recommence jusque à ce que le joueur trouve le mot exacte ou que sont nombre
 Afficher un message selon si le joueur gagner ou perd
  
 
-Consigne :
+## Consigne :
 
 - Coder ce jeu en respectant les consignes sité plus haut.
 - Fait en sorte de supporter les cas où l’utilisateur entre n’importe quoi (par exemple quand il écrit un mot trop petit ou trop long)
@@ -36,3 +36,19 @@ Consigne :
 - Ajouté dans l’affichage les caractères qui sont dans le mot mais pas la bonne place
 - ATTENTION: il ne faut prendre en compte les lettres qui sont déjà placé au bonne endroit
 - fait en sorte de conservé le score du joueur et de lui redemander si il veut rejouer après chaque partie
+
+## Feature : 
+
+Presente : 
+
+- [x] Fait en sorte de supporter les cas où l’utilisateur entre n’importe quoi (par exemple quand il écrit un mot trop petit ou trop long)
+- [x] Fait en sorte que l’affichage sur le terminale soit clair et agréable
+- [x] le joueur doit voir à tout moment l’affichage du mot recherché et le nombre de tentative restante
+- [x] Mettez des commentaires dans votre code. explique ce que fait vos fonction et vos boucle.
+- [x] Ajouté dans l’affichage les caractères qui sont dans le mot mais pas la bonne place
+- [X] ATTENTION: il ne faut prendre en compte les lettres qui sont déjà placé au bonne endroit
+
+Non-Presente :
+
+- [x] Faites en sorte qu’avant le début de la partie, le joueur puisse choisir la taille du mot parmi ceux disponible et le nombre de tentative.
+- [x] fait en sorte de conservé le score du joueur et de lui redemander si il veut rejouer après chaque partie
