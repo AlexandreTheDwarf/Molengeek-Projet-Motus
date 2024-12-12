@@ -26,19 +26,25 @@ const crocmou = document.getElementById("crocmou")
 const lose = document.getElementById("lose")
 const tryAgainButton = document.getElementById("try-again");
 
+const setupSection = document.getElementById("setup-section");
+const gameSection = document.getElementById("game-section");
+const wordLengthSelector = document.getElementById("word-length");
+const attemptsInput = document.getElementById("attempts");
+const startGameButton = document.getElementById("start-game-button");
+
+const scoreboard = document.getElementById("scoreboard");
+
 // Liste de mots disponibles
-let wordsFive = [
-    "porte", "table", "fleur", "livre", "lapin", "taupe", "raton", "bible", "fibre",
-    "titan", "quete", "verre", "plage", "rouge", "noire", "plume", "terre", "image",
-    "crime", "hiver", "poule", "vache", "franc", "aimer", "lampe", "coeur", "sable",
-    "arbre", "ranch", "banal", "bleue", "doute", "fuite", "grive", "jante", "linge",
-    "musee", "neige", "ombre", "point", "quais", "rival", "sauce", "veste", "zeste"
-];
+let wordsByLength = {
+    5: ["porte", "table", "fleur", "livre", "lapin", "taupe", "raton", "bible", "fibre","titan", "quete", "verre", "plage", "rouge", "noire", "plume", "terre", "image","crime", "hiver", "poule", "vache", "franc", "aimer", "lampe", "coeur", "sable","arbre", "ranch", "banal", "bleue", "doute", "fuite", "grive", "jante", "linge","musee", "neige", "ombre", "point", "quais", "rival", "sauce", "veste", "zeste"],
+    6: ["renard", "bancal", "sombre", "glisse", "charme", "paille"],
+    7: ["lapines", "garages", "horizon", "marques", "abysses", "abattre", "aborder", "ARMURES", "arnaque"]
+};
 
 let GuessWord; // Mot à deviner
 let maxAttempts = 6; // Nombre d'essais maximum
 let currentAttempt; // Tentative actuelle
-let AffichageGuess; // État des lettres devinées
+let score = 0;
 
 // Création de la grille
 function initializeGrid() {
@@ -50,15 +56,30 @@ function initializeGrid() {
             grid.appendChild(cell);
         }
     }
+    grid.style.width = ((GuessWord.length * 50) + 35) + "px";
+    grid.style.gridTemplateColumns = `repeat(${GuessWord.length}, 50px)`;
 }
 
 // Fonction principale pour démarrer ou redémarrer le jeu
 function startGame() {
-    // Réinitialisation des variables de jeu
-    GuessWord = wordsFive[Math.floor(Math.random() * wordsFive.length)];
-    console.log(GuessWord); // Debug : Afficher le mot généré
+    // Récupérer la taille et le nombre d'essais choisis par l'utilisateur
+    const wordLength = parseInt(wordLengthSelector.value, 10);
+    maxAttempts = parseInt(attemptsInput.value, 10);
+
+    // Vérification de la validité des paramètres
+    if (!wordsByLength[wordLength]) {
+        feedback.textContent = "Taille de mot invalide.";
+        return;
+    }
+
+    // Initialisation du mot et des variables de jeu
+    const wordList = wordsByLength[wordLength];
+    userInput.setAttribute("min", wordLength);
+    userInput.setAttribute("max", wordLength);
+    GuessWord = wordList[Math.floor(Math.random() * wordList.length)];
+    GuessWord = GuessWord.toLowerCase();
+    console.log(`Debug : ${GuessWord}`); // Debug
     currentAttempt = 0;
-    AffichageGuess = Array(GuessWord.length).fill("[]");
 
     // Réinitialiser l'interface
     feedback.textContent = "";
@@ -67,16 +88,22 @@ function startGame() {
     userInput.disabled = false;
     submitButton.disabled = false;
     userInput.value = "";
+    userInput.setAttribute("maxlength", wordLength);
 
     // Réinitialiser la grille
     initializeGrid();
+
+    // Basculer l'affichage des sections
+    hiddenOn(setupSection);
+    hiddenOff(gameSection);
+    hiddenOff(scoreboard)
 }
 
 function handleAttempt() {
     let GuessUser = userInput.value.toLowerCase();
 
     if (GuessUser.length !== GuessWord.length) {
-        feedback.textContent = "Le mot doit contenir exactement 5 lettres.";
+        feedback.textContent = `Le mot doit contenir exactement ${GuessWord.length} lettres.`;
         return;
     }
 
@@ -90,10 +117,14 @@ function handleAttempt() {
     for (let i = 0; i < GuessWord.length; i++) {
         const cell = grid.children[rowStartIndex + i];
         if (GuessUser[i] === GuessWord[i]) {
-            AffichageGuess[i] = `[${GuessUser[i]}]`;
-            cell.textContent = GuessUser[i];
-            cell.classList.add("correct");
             tempWord[i] = null; // Marquer cette lettre comme utilisée
+             // Ajouter un délai pour l'apparition de la lettre
+             setTimeout(() => {
+                cell.textContent = GuessUser[i];
+                cell.classList.add("correct");
+                // test mais comment devenir sourd en 2 etape .... et pas trouvé le sond quand pas a la bonne place
+                // playSound("./public/music/motus-lettre-bonne.mp3") 
+            }, i * 200); // Délai de 200ms entre chaque lettre
         }
     }
 
@@ -102,12 +133,17 @@ function handleAttempt() {
         const cell = grid.children[rowStartIndex + i];
         if (GuessUser[i] !== GuessWord[i] && tempWord.includes(GuessUser[i])) {
             WrongPlace.push(GuessUser[i]);
-            cell.textContent = GuessUser[i];
-            cell.classList.add("wrong-place");
-            // Retirer la première occurrence de cette lettre
-            tempWord[tempWord.indexOf(GuessUser[i])] = null;
+            setTimeout(() => {
+                cell.textContent = GuessUser[i];
+                cell.classList.add("wrong-place");
+                tempWord[tempWord.indexOf(GuessUser[i])] = null; // Retirer l'occurrence
+            }, i * 200);
         } else if (GuessUser[i] !== GuessWord[i]) {
-            cell.textContent = GuessUser[i];
+            setTimeout(() => {
+                cell.textContent = GuessUser[i];
+                // test mais comment devenir sourd en 2 etape .... et pas trouvé le sond quand pas a la bonne place
+                // playSound("./public/music/mauvaise.mp3") 
+            }, i * 200);
         }
     }
 
@@ -116,26 +152,47 @@ function handleAttempt() {
 
     currentAttempt++;
 
+    // Victory or Lose :
+
     if (GuessUser === GuessWord) {
         feedback.textContent = "Bravo ! Vous avez trouvé le mot !";
         userInput.disabled = true;
         submitButton.disabled = true;
         playSound("./public/music/Toothless.mp3");
-        hiddenOff(crocmou)
+        hiddenOff(crocmou);
+        hiddenOff(tryAgainButton)
+        score += (maxAttempts - currentAttempt);
+        scoreboard.textContent = `Ton score est de ${score} point(s)`
     } else if (currentAttempt === maxAttempts) {
         feedback.textContent = `Perdu ! Le mot était "${GuessWord}".`;
         userInput.disabled = true;
         submitButton.disabled = true;
         playSound("./public/music/lose.mp3");
-        hiddenOff(lose)
+        hiddenOff(lose);
+        hiddenOff(tryAgainButton)
+        if (score >= 5){
+            score -= 5
+            scoreboard.textContent = `Ton score est de ${score} point(s)`
+        }
+        else{
+            score = 0
+            scoreboard.textContent = `Ton score est de ${score} point(s)`
+        }     
     }
 
     userInput.value = "";
 }
 
-
-// Ajouter l'événement pour recommencer
-tryAgainButton.addEventListener("click", startGame);
+// l'événement pour recommencer
+tryAgainButton.addEventListener("click", function () {
+    hiddenOff(setupSection);
+    hiddenOn(gameSection);
+    hiddenOn(crocmou);
+    hiddenOn(lose);
+    hiddenOn(tryAgainButton);
+    hiddenOn(scoreboard);
+    audioPlayer.pause()
+});
 
 // Gestion des événements
 submitButton.addEventListener("click", handleAttempt);
@@ -146,4 +203,4 @@ userInput.addEventListener("keypress", function (e) {
 });
 
 // Démarrage initial
-startGame();
+startGameButton.addEventListener("click", startGame);
