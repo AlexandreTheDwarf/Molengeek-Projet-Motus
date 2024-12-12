@@ -48,7 +48,8 @@ Presente :
 - [x] Ajouté dans l’affichage les caractères qui sont dans le mot mais pas la bonne place
 - [X] ATTENTION: il ne faut prendre en compte les lettres qui sont déjà placé au bonne endroit
 - [x] Faites en sorte qu’avant le début de la partie, le joueur puisse choisir la taille du mot parmi ceux disponible et le nombre de tentative.
-
-Non-Presente :
-
 - [x] fait en sorte de conservé le score du joueur et de lui redemander si il veut rejouer après chaque partie
+
+
+
+
